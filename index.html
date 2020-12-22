@@ -630,11 +630,41 @@
     }
 
     window.onload = () => {
+        preloadImages()
         applyText()
         document.getElementById("headline").addEventListener("click", () => location.reload())
         renderControls()
         updateButtons()
         renderOverview()
+    }
+
+    function preloadImages() {
+        preloadImage("assets/yes_on.png")
+        preloadImage("assets/no_off.png")
+        preloadImage("assets/no_on.png")
+        preloadImage("assets/yes_off.png")
+        preloadImage("assets/box_impossible.png")
+        preloadImage("assets/box_possible.png")
+        preloadImage("assets/box_proven.png")
+        preloadImage("assets/uv_impossible.png")
+        preloadImage("assets/uv_possible.png")
+        preloadImage("assets/uv_proven.png")
+        preloadImage("assets/book_impossible.png")
+        preloadImage("assets/book_possible.png")
+        preloadImage("assets/book_proven.png")
+        preloadImage("assets/temp_impossible.png")
+        preloadImage("assets/temp_possible.png")
+        preloadImage("assets/temp_proven.png")
+        preloadImage("assets/emf_impossible.png")
+        preloadImage("assets/emf_possible.png")
+        preloadImage("assets/emf_proven.png")
+        preloadImage("assets/orb_impossible.png")
+        preloadImage("assets/orb_possible.png")
+        preloadImage("assets/orb_proven.png")
+    }
+
+    function preloadImage(url) {
+        (new Image()).src = url
     }
 </script>
 </body>
