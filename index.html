@@ -242,6 +242,10 @@
         "6": 0,
     }
 
+    const scoreExcluded = -1;
+    const scoreSuspicious = 0;
+    const scoreConvicted = 1;
+
     function updateButtons() {
         const selectedClass = "evidence-button-selected";
         const possibleClass = "possible";
@@ -371,24 +375,24 @@
         const matchedExcluded = getExcludes(evidence, selection);
 
         if (matchedExcluded > 0) {
-            return -1
+            return scoreExcluded
         } else if (scoredProofs < proofs) {
-            return -1
+            return scoreExcluded
         }
         if (scoredProofs === 3) {
-            return 1
+            return scoreConvicted
         }
-        return 0
+        return scoreSuspicious
     }
 
     function getScoreClass(evidence, proofs) {
         const score = getScore(evidence, proofs)
         let scoreClass = "tbd"
 
-        if (score === -1) {
+        if (score === scoreExcluded) {
             scoreClass = "ghost-excluded"
-        } else if (score === 1) {
-            scoreClass = "ghost-proven"
+        } else if (score === scoreConvicted) {
+            scoreClass = "ghost-convicted"
         }
 
         return scoreClass;
@@ -428,7 +432,7 @@
                 return g.evidence
             })
             .filter((evidence) => {
-                return getScore(evidence, getAllProofs()) >= 0;
+                return getScore(evidence, getAllProofs()) >= scoreSuspicious;
             })
             .reduce((p, c) => {
                 return p.concat(c)
