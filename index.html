@@ -244,7 +244,7 @@
         { name: "Oni", evidence: ["5", "1", "3"] },
     ];
 
-    const selection = {
+    const evidenceStatus = {
         "1": 0,
         "2": 0,
         "3": 0,
@@ -257,14 +257,18 @@
     const scoreSuspicious = 0;
     const scoreConvicted = 1;
 
+    const evidenceExcluded = -1;
+    const evidenceUnchecked = 0;
+    const evidenceProven = 1;
+
     function updateButtons() {
         const selectedClass = "evidence-button-selected";
         const possibleClass = "possible";
         const impossibleClass = "impossible";
         const possibleEvidences = getPossibleEvidences();
 
-        for (let id of Object.keys(selection)) {
-            if (!selection.hasOwnProperty(id)) {
+        for (let id of Object.keys(evidenceStatus)) {
+            if (!evidenceStatus.hasOwnProperty(id)) {
                 continue
             }
 
@@ -276,19 +280,18 @@
             yes.classList.remove(selectedClass)
             no.classList.remove(selectedClass)
 
-            switch (selection[id]) {
-                case -1:
+            switch (evidenceStatus[id]) {
+                case evidenceExcluded:
                     no.classList.add(selectedClass)
                     break;
-                case 0:
+                case evidenceUnchecked:
                     bt.classList.add(selectedClass)
                     break;
-                case 1:
+                case evidenceProven:
                     yes.classList.add(selectedClass)
                     break;
             }
 
-            console.log(possibleEvidences)
             if (possibleEvidences.indexOf(id) > -1) {
                 bt.classList.remove(impossibleClass)
                 bt.classList.add(possibleClass)
@@ -302,10 +305,10 @@
     function updateSelection(e, id, val) {
         e.stopPropagation();
 
-        if (selection[id] === val) {
-            selection[id] = 0;
+        if (evidenceStatus[id] === val) {
+            evidenceStatus[id] = 0;
         } else {
-            selection[id] = val;
+            evidenceStatus[id] = val;
         }
 
         updateButtons();
@@ -317,8 +320,8 @@
             const name = evidence[evId]
             const ev = document.createElement("div")
 
-            const status = parseInt(selection[evId]);
-            let statusClass = status === -1 ? "evidence-excluded" : status === 1 ? "evidence-proven" : "tbd";
+            const status = parseInt(evidenceStatus[evId]);
+            let statusClass = status === evidenceExcluded ? "evidence-excluded" : status === evidenceProven ? "evidence-proven" : "tbd";
 
             ev.classList.add("ghost-evidence")
             ev.classList.add(statusClass)
@@ -341,11 +344,11 @@
     }
 
     function createEvidenceButton(name, id) {
-        id = '' + id;
         const button = document.createElement("div")
         const yes = document.createElement("div")
         const no = document.createElement("div")
         const classId = "id-" + id;
+
         button.id = buttonId(id);
         yes.id = buttonIdYes(id);
         no.id = buttonIdNo(id);
@@ -362,7 +365,6 @@
         yes.classList.add(classId)
         no.classList.add(classId)
 
-
         button.addEventListener("click", (e) => updateSelection(e, id, 0))
         yes.addEventListener("click", (e) => updateSelection(e, id, 1))
         no.addEventListener("click", (e) => updateSelection(e, id, -1))
@@ -374,16 +376,16 @@
     }
 
     function getProofs(evidence, sel) {
-        return evidence.filter((ev) => parseInt(sel[ev]) > 0).length;
+        return evidence.filter((ev) => parseInt(sel[ev]) > evidenceUnchecked).length;
     }
 
     function getExcludes(evidence, sel) {
-        return evidence.filter((ev) => parseInt(sel[ev]) < 0).length;
+        return evidence.filter((ev) => parseInt(sel[ev]) < evidenceUnchecked).length;
     }
 
     function getScore(evidence, proofs) {
-        const scoredProofs = getProofs(evidence, selection);
-        const matchedExcluded = getExcludes(evidence, selection);
+        const scoredProofs = getProofs(evidence, evidenceStatus);
+        const matchedExcluded = getExcludes(evidence, evidenceStatus);
 
         if (matchedExcluded > 0) {
             return scoreExcluded
@@ -401,16 +403,16 @@
         let scoreClass = "tbd"
 
         if (score === scoreExcluded) {
-            scoreClass = "ghost-excluded"
+            return "ghost-excluded"
         } else if (score === scoreConvicted) {
-            scoreClass = "ghost-convicted"
+            return "ghost-convicted"
         }
 
         return scoreClass;
     }
 
     function getAllProofs() {
-        return Object.keys(selection).filter((e) => parseInt(selection[e]) === 1).length;
+        return Object.keys(evidenceStatus).filter((e) => parseInt(evidenceStatus[e]) === 1).length;
     }
 
     function renderOverview() {
@@ -427,10 +429,11 @@
 
             ghost.classList.add("ghost")
             ghost.classList.add(scoreClass)
-            name.innerHTML = g.name
             name.classList.add("ghost-name")
+            name.innerHTML = g.name
 
             ghost.appendChild(name)
+
             getEvidences(g).map((ev) => ghost.appendChild(ev))
 
             overview.appendChild(ghost)
