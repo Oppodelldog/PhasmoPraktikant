@@ -1,0 +1,452 @@
+<html lang="de">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Phasmo-Praktikant</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            outline: none;
+            font-size: 18px;
+            box-sizing: border-box;
+        }
+
+        h1 {
+            font-size: 26px;
+        }
+
+        body {
+            color: white;
+            background-color: black;
+            margin-left: 20px;
+            margin-right: 20px;
+        }
+
+        h1 {
+            cursor: pointer;
+        }
+
+        .content {
+            margin-top: 40px;
+
+            display: flex;
+            flex-direction: column;
+            justify-items: center;
+            align-items: center;
+        }
+
+
+        .content > * + * {
+            margin-top: 40px;
+        }
+
+
+        .ghost {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            align-items: center;
+
+            padding-left: 10px;
+            padding-right: 10px;
+        }
+
+        .ghost + .ghost {
+            margin-top: 8px;
+        }
+
+        .ghost > * + * {
+            margin-left: 10px;
+        }
+
+        .ghost-name {
+            font-weight: bold;
+            width: 100px;
+        }
+
+        .ghost-evidence {
+            font-size: 12px;
+        }
+
+
+        .option-headline {
+            font-weight: bold;
+        }
+
+        .evidence-proven {
+            color: greenyellow;
+        }
+
+        .evidence-excluded {
+            color: #5d0000;
+        }
+
+        .ghost-proven {
+            border: 1px solid greenyellow;
+            background-color: darkgreen;
+        }
+
+        .ghost-excluded, ghost-excluded > * {
+            text-decoration: line-through;
+            color: #5d0000;
+        }
+
+        .label {
+            width: 120px;
+        }
+
+        .option {
+            margin-left: 30px;
+        }
+
+        .evidence {
+            display: grid;
+            grid-template-rows: 33.3333% 33.3333% 33.3333%;
+            grid-template-columns: 33.3333% 33.3333% 33.3333%;
+            row-gap: 40px;
+        }
+
+        .evidence-button {
+            margin-left: 30px;
+            margin-right: 30px;
+            position: relative;
+            display: block;
+            width: 64px;
+            height: 64px;
+            background-size: contain;
+        }
+
+        .evidence-button-yes, .evidence-button-no {
+            position: absolute;
+            background-size: contain;
+            width: 32px;
+            height: 32px;
+            bottom: -12px;
+        }
+
+        .evidence-button-no {
+            background-image: url(assets/no_off.png);
+            left: -13px;
+        }
+
+        .evidence-button-yes {
+            background-image: url(assets/yes_off.png);
+            right: -13px;
+        }
+
+        .evidence-button-no.evidence-button-selected {
+            background-image: url(assets/no_on.png);
+        }
+
+        .evidence-button-yes.evidence-button-selected {
+            background-image: url(assets/yes_on.png);
+        }
+
+        .evidence-button.id-1.possible {
+            background-image: url(assets/box_possible.png);
+        }
+
+        .evidence-button.id-1.impossible {
+            background-image: url(assets/box_impossible.png);
+        }
+
+        .evidence-button.id-2.possible {
+            background-image: url(assets/uv_possible.png);
+        }
+
+        .evidence-button.id-2.impossible {
+            background-image: url(assets/uv_impossible.png);
+        }
+
+        .evidence-button.id-3.possible {
+            background-image: url(assets/book_possible.png);
+        }
+
+        .evidence-button.id-3.impossible {
+            background-image: url(assets/book_impossible.png);
+        }
+
+        .evidence-button.id-4.possible {
+            background-image: url(assets/temp_possible.png);
+        }
+
+        .evidence-button.id-4.impossible {
+            background-image: url(assets/temp_impossible.png);
+        }
+
+        .evidence-button.id-5.possible {
+            background-image: url(assets/emf_possible.png);
+        }
+
+        .evidence-button.id-5.impossible {
+            background-image: url(assets/emf_impossible.png);
+        }
+
+        .evidence-button.id-6.possible {
+            background-image: url(assets/orb_possible.png);
+        }
+
+        .evidence-button.id-6.impossible {
+            background-image: url(assets/orb_impossible.png);
+        }
+    </style>
+</head>
+<body>
+<div class="content">
+    <h1 id="headline">Phasmo-Praktikant</h1>
+    <div id="controls" class="controls">
+        <div id="evidence" class="evidence">
+        </div>
+    </div>
+    <div id="overview" class="overview"></div>
+</div>
+
+
+<script type="application/ecmascript">
+    const evidence = {
+        "1": "Box",
+        "2": "Fingerabd.",
+        "3": "Buch",
+        "4": "Gefriertemp.",
+        "5": "EMF - 5",
+        "6": "Orb",
+    }
+
+    const ghosts = [
+        { name: "Spirit", evidence: ["1", "2", "3"] },
+        { name: "Gespenst", evidence: ["2", "4", "1"] },
+        { name: "Phantom", evidence: ["5", "6", "4"] },
+        { name: "Poltergeist", evidence: ["1", "2", "6"] },
+        { name: "Banshee", evidence: ["5", "2", "4"] },
+        { name: "Dshinn", evidence: ["1", "6", "5"] },
+        { name: "Mare", evidence: ["1", "6", "4"] },
+        { name: "Revenant", evidence: ["5", "2", "3"] },
+        { name: "Shade", evidence: ["5", "6", "3"] },
+        { name: "Dämon", evidence: ["1", "3", "4"] },
+        { name: "Yurei", evidence: ["6", "3", "4"] },
+        { name: "Oni", evidence: ["5", "1", "3"] },
+    ];
+
+    const selection = {
+        "1": 0,
+        "2": 0,
+        "3": 0,
+        "4": 0,
+        "5": 0,
+        "6": 0,
+    }
+
+    function updateButtons() {
+        const selectedClass = "evidence-button-selected";
+        const possibleClass = "possible";
+        const impossibleClass = "impossible";
+        const possibleEvidences = getPossibleEvidences();
+
+        for (let id of Object.keys(selection)) {
+            if (!selection.hasOwnProperty(id)) {
+                continue
+            }
+
+            const bt = document.getElementById(buttonId(id))
+            const yes = document.getElementById(buttonIdYes(id))
+            const no = document.getElementById(buttonIdNo(id))
+
+            bt.classList.remove(selectedClass)
+            yes.classList.remove(selectedClass)
+            no.classList.remove(selectedClass)
+
+            switch (selection[id]) {
+                case -1:
+                    no.classList.add(selectedClass)
+                    break;
+                case 0:
+                    bt.classList.add(selectedClass)
+                    break;
+                case 1:
+                    yes.classList.add(selectedClass)
+                    break;
+            }
+
+            console.log(possibleEvidences)
+            if (possibleEvidences.indexOf(id) > -1) {
+                bt.classList.remove(impossibleClass)
+                bt.classList.add(possibleClass)
+            } else {
+                bt.classList.remove(possibleClass)
+                bt.classList.add(impossibleClass)
+            }
+        }
+    }
+
+    function updateSelection(e, id, val) {
+        e.stopPropagation();
+
+        if (selection[id] === val) {
+            selection[id] = 0;
+        } else {
+            selection[id] = val;
+        }
+
+        updateButtons();
+        renderOverview();
+    }
+
+    function getEvidences(e) {
+        return e.evidence.map((evId) => {
+            const name = evidence[evId]
+            const ev = document.createElement("div")
+
+            const status = parseInt(selection[evId]);
+            let statusClass = status === -1 ? "evidence-excluded" : status === 1 ? "evidence-proven" : "tbd";
+
+            ev.classList.add("ghost-evidence")
+            ev.classList.add(statusClass)
+            ev.innerHTML = name
+
+            return ev
+        })
+    }
+
+    function buttonIdYes(id) {
+        return "evidence-button-yes-" + id;
+    }
+
+    function buttonIdNo(id) {
+        return "evidence-button-no-" + id;
+    }
+
+    function buttonId(id) {
+        return "evidence-button-" + id;
+    }
+
+    function createEvidenceButton(name, id) {
+        id = '' + id;
+        const button = document.createElement("div")
+        const yes = document.createElement("div")
+        const no = document.createElement("div")
+        const classId = "id-" + id;
+        button.id = buttonId(id);
+        yes.id = buttonIdYes(id);
+        no.id = buttonIdNo(id);
+
+        button.title = name;
+        yes.title = "Hab Isch gehabt Alter";
+        no.title = "Dat sacht mir jetzt nix";
+
+        button.classList.add("evidence-button")
+        yes.classList.add("evidence-button-yes")
+        no.classList.add("evidence-button-no")
+
+        button.classList.add(classId)
+        yes.classList.add(classId)
+        no.classList.add(classId)
+
+
+        button.addEventListener("click", (e) => updateSelection(e, id, 0))
+        yes.addEventListener("click", (e) => updateSelection(e, id, 1))
+        no.addEventListener("click", (e) => updateSelection(e, id, -1))
+
+        button.appendChild(yes)
+        button.appendChild(no)
+
+        return button;
+    }
+
+    function getProofs(evidence, sel) {
+        return evidence.filter((ev) => parseInt(sel[ev]) > 0).length;
+    }
+
+    function getExcludes(evidence, sel) {
+        return evidence.filter((ev) => parseInt(sel[ev]) < 0).length;
+    }
+
+    function getScore(evidence, proofs) {
+        const scoredProofs = getProofs(evidence, selection);
+        const matchedExcluded = getExcludes(evidence, selection);
+
+        if (matchedExcluded > 0) {
+            return -1
+        } else if (scoredProofs < proofs) {
+            return -1
+        }
+        if (scoredProofs === 3) {
+            return 1
+        }
+        return 0
+    }
+
+    function getScoreClass(evidence, proofs) {
+        const score = getScore(evidence, proofs)
+        let scoreClass = "tbd"
+
+        if (score === -1) {
+            scoreClass = "ghost-excluded"
+        } else if (score === 1) {
+            scoreClass = "ghost-proven"
+        }
+
+        return scoreClass;
+    }
+
+    function getAllProofs() {
+        return Object.keys(selection).filter((e) => parseInt(selection[e]) === 1).length;
+    }
+
+    function renderOverview() {
+        const proofs = getAllProofs();
+        const overview = document.getElementById("overview");
+        while (overview.firstChild) {
+            overview.firstChild.remove()
+        }
+
+        ghosts.map((g) => {
+            const ghost = document.createElement("div")
+            const name = document.createElement("div")
+            const scoreClass = getScoreClass(g.evidence, proofs);
+
+            ghost.classList.add("ghost")
+            ghost.classList.add(scoreClass)
+            name.innerHTML = g.name
+            name.classList.add("ghost-name")
+
+            ghost.appendChild(name)
+            getEvidences(g).map((ev) => ghost.appendChild(ev))
+
+            overview.appendChild(ghost)
+        })
+    }
+
+    function getPossibleEvidences() {
+        return ghosts
+            .map((g) => {
+                return g.evidence
+            })
+            .filter((evidence) => {
+                return getScore(evidence, getAllProofs()) >= 0;
+            })
+            .reduce((p, c) => {
+                return p.concat(c)
+            })
+            .filter((value, index, self) => {
+                return self.indexOf(value) === index;
+            })
+    }
+
+    function renderControls() {
+        const ev = document.getElementById("evidence")
+        for (let k of Object.keys(evidence)) {
+            ev.appendChild(createEvidenceButton(evidence[k], k))
+        }
+    }
+
+    window.onload = () => {
+        document.getElementById("headline").addEventListener("click", () => location.reload())
+        renderControls()
+        updateButtons()
+        renderOverview()
+    }
+</script>
+</body>
+</html>
