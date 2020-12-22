@@ -78,7 +78,6 @@
             font-size: 12px;
         }
 
-
         .option-headline {
             font-weight: bold;
         }
@@ -155,7 +154,6 @@
         .evidence-button-yes.evidence-button-selected {
             background-image: url(assets/yes_on.png);
         }
-
 
         .evidence-button.id-1.impossible {
             background-image: url(assets/box_impossible.png);
@@ -254,6 +252,9 @@
             "evidence_emf5": "EMF - 5",
             "evidence_orb": "Orb",
 
+            "evidence_proven": "Hab Isch gehabt Alter",
+            "evidence_excluded": "Dat sacht mir jetzt nix",
+
             "ghost_spirit": "Spirit",
             "ghost_wraith": "Gespenst",
             "ghost_phantom": "Phantom",
@@ -266,8 +267,6 @@
             "ghost_demon": "Dämon",
             "ghost_yurei": "Yurei",
             "ghost_oni": "Oni",
-            "evidence_proven": "Hab Isch gehabt Alter",
-            "evidence_excluded": "Dat sacht mir jetzt nix",
         },
         "en": {
             "html_title": "Phasmophobia Deduction Helper",
@@ -279,6 +278,9 @@
             "evidence_freezing": "Freezing",
             "evidence_emf5": "EMF - 5",
             "evidence_orb": "Orb",
+
+            "evidence_proven": "Yes, I had that",
+            "evidence_excluded": "Nope, not faced this evidence.",
 
             "ghost_spirit": "Spirit",
             "ghost_wraith": "Wraith",
@@ -292,8 +294,6 @@
             "ghost_demon": "Demon",
             "ghost_yurei": "Yurei",
             "ghost_oni": "Oni",
-            "evidence_proven": "Yes, I had that",
-            "evidence_excluded": "Nope, not faced this evidence.",
         },
         "fr": {
             "html_title": "Phasmophobia Assistante Déduction",
@@ -305,6 +305,9 @@
             "evidence_freezing": "Glaciales",
             "evidence_emf5": "EMF - 5",
             "evidence_orb": "Orbe",
+
+            "evidence_proven": "Oui, j'avais ça",
+            "evidence_excluded": "Non, pas face à cette preuve.",
 
             "ghost_spirit": "Esprit",
             "ghost_wraith": "Spectre",
@@ -318,8 +321,6 @@
             "ghost_demon": "Démon",
             "ghost_yurei": "Yurei",
             "ghost_oni": "Oni",
-            "evidence_proven": "Oui, j'avais ça",
-            "evidence_excluded": "Non, pas face à cette preuve.",
         }
     }
 
@@ -405,8 +406,6 @@
                 bt.classList.add(provenClass)
             } else if (possibleEvidences.indexOf(id) > -1) {
                 bt.classList.add(possibleClass)
-            } else {
-                bt.classList.add(impossibleClass)
             }
         }
     }
@@ -415,7 +414,7 @@
         e.stopPropagation()
 
         if (evidenceStatus[id] === val) {
-            evidenceStatus[id] = 0
+            evidenceStatus[id] = evidenceUnchecked
         } else {
             evidenceStatus[id] = val
         }
@@ -474,9 +473,9 @@
         yes.classList.add(classId)
         no.classList.add(classId)
 
-        button.addEventListener("click", (e) => updateSelection(e, id, 0))
-        yes.addEventListener("click", (e) => updateSelection(e, id, 1))
-        no.addEventListener("click", (e) => updateSelection(e, id, -1))
+        button.addEventListener("click", (e) => updateSelection(e, id, evidenceUnchecked))
+        yes.addEventListener("click", (e) => updateSelection(e, id, evidenceProven))
+        no.addEventListener("click", (e) => updateSelection(e, id, evidenceExcluded))
 
         button.appendChild(yes)
         button.appendChild(no)
@@ -493,17 +492,18 @@
     }
 
     function getScore(evidence, proofs) {
+        const maxNumberEvidence = 3;
         const scoredProofs = getProofs(evidence, evidenceStatus)
         const matchedExcluded = getExcludes(evidence, evidenceStatus)
 
-        if (matchedExcluded > 0) {
-            return scoreExcluded
-        } else if (scoredProofs < proofs) {
+        if (matchedExcluded > 0 || scoredProofs < proofs) {
             return scoreExcluded
         }
-        if (scoredProofs === 3) {
+
+        if (scoredProofs === maxNumberEvidence) {
             return scoreConvicted
         }
+
         return scoreSuspicious
     }
 
@@ -536,8 +536,8 @@
             const name = document.createElement("div")
             const scoreClass = getScoreClass(g.evidence, proofs)
 
-            ghost.classList.add("ghost")
             ghost.classList.add(scoreClass)
+            ghost.classList.add("ghost")
             name.classList.add("ghost-name")
             name.innerHTML = getText(g.name)
 
