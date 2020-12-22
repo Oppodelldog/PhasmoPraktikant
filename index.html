@@ -1,9 +1,9 @@
+
 <html lang="de">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Phasmo-Praktikant</title>
-
     <style>
         * {
             margin: 0;
@@ -41,7 +41,6 @@
         .content > * + * {
             margin-top: 40px;
         }
-
 
         .ghost {
             display: flex;
@@ -83,7 +82,7 @@
             color: #5d5d5d;
         }
 
-        .ghost-excluded, ghost-excluded > * {
+        .ghost-excluded, .ghost-excluded > * {
             text-decoration: line-through;
             color: #5d5d5d;
         }
@@ -218,7 +217,6 @@
     <div id="overview" class="overview"></div>
 </div>
 
-
 <script type="application/ecmascript">
     const evidence = {
         "1": "Box",
@@ -242,7 +240,7 @@
         { name: "Dämon", evidence: ["1", "3", "4"] },
         { name: "Yurei", evidence: ["6", "3", "4"] },
         { name: "Oni", evidence: ["5", "1", "3"] },
-    ];
+    ]
 
     const evidenceStatus = {
         "1": 0,
@@ -253,19 +251,19 @@
         "6": 0,
     }
 
-    const scoreExcluded = -1;
-    const scoreSuspicious = 0;
-    const scoreConvicted = 1;
+    const scoreExcluded = -1
+    const scoreSuspicious = 0
+    const scoreConvicted = 1
 
-    const evidenceExcluded = -1;
-    const evidenceUnchecked = 0;
-    const evidenceProven = 1;
+    const evidenceExcluded = -1
+    const evidenceUnchecked = 0
+    const evidenceProven = 1
 
     function updateButtons() {
-        const selectedClass = "evidence-button-selected";
-        const possibleClass = "possible";
-        const impossibleClass = "impossible";
-        const possibleEvidences = getPossibleEvidences();
+        const selectedClass = "evidence-button-selected"
+        const possibleClass = "possible"
+        const impossibleClass = "impossible"
+        const possibleEvidences = getPossibleEvidences()
 
         for (let id of Object.keys(evidenceStatus)) {
             if (!evidenceStatus.hasOwnProperty(id)) {
@@ -283,13 +281,13 @@
             switch (evidenceStatus[id]) {
                 case evidenceExcluded:
                     no.classList.add(selectedClass)
-                    break;
+                    break
                 case evidenceUnchecked:
                     bt.classList.add(selectedClass)
-                    break;
+                    break
                 case evidenceProven:
                     yes.classList.add(selectedClass)
-                    break;
+                    break
             }
 
             if (possibleEvidences.indexOf(id) > -1) {
@@ -303,16 +301,16 @@
     }
 
     function updateSelection(e, id, val) {
-        e.stopPropagation();
+        e.stopPropagation()
 
         if (evidenceStatus[id] === val) {
-            evidenceStatus[id] = 0;
+            evidenceStatus[id] = 0
         } else {
-            evidenceStatus[id] = val;
+            evidenceStatus[id] = val
         }
 
-        updateButtons();
-        renderOverview();
+        updateButtons()
+        renderOverview()
     }
 
     function getEvidences(e) {
@@ -320,8 +318,8 @@
             const name = evidence[evId]
             const ev = document.createElement("div")
 
-            const status = parseInt(evidenceStatus[evId]);
-            let statusClass = status === evidenceExcluded ? "evidence-excluded" : status === evidenceProven ? "evidence-proven" : "tbd";
+            const status = parseInt(evidenceStatus[evId])
+            let statusClass = status === evidenceExcluded ? "evidence-excluded" : status === evidenceProven ? "evidence-proven" : "tbd"
 
             ev.classList.add("ghost-evidence")
             ev.classList.add(statusClass)
@@ -332,30 +330,30 @@
     }
 
     function buttonIdYes(id) {
-        return "evidence-button-yes-" + id;
+        return "evidence-button-yes-" + id
     }
 
     function buttonIdNo(id) {
-        return "evidence-button-no-" + id;
+        return "evidence-button-no-" + id
     }
 
     function buttonId(id) {
-        return "evidence-button-" + id;
+        return "evidence-button-" + id
     }
 
     function createEvidenceButton(name, id) {
         const button = document.createElement("div")
         const yes = document.createElement("div")
         const no = document.createElement("div")
-        const classId = "id-" + id;
+        const classId = "id-" + id
 
-        button.id = buttonId(id);
-        yes.id = buttonIdYes(id);
-        no.id = buttonIdNo(id);
+        button.id = buttonId(id)
+        yes.id = buttonIdYes(id)
+        no.id = buttonIdNo(id)
 
-        button.title = name;
-        yes.title = "Hab Isch gehabt Alter";
-        no.title = "Dat sacht mir jetzt nix";
+        button.title = name
+        yes.title = "Hab Isch gehabt Alter"
+        no.title = "Dat sacht mir jetzt nix"
 
         button.classList.add("evidence-button")
         yes.classList.add("evidence-button-yes")
@@ -372,20 +370,20 @@
         button.appendChild(yes)
         button.appendChild(no)
 
-        return button;
+        return button
     }
 
     function getProofs(evidence, sel) {
-        return evidence.filter((ev) => parseInt(sel[ev]) > evidenceUnchecked).length;
+        return evidence.filter((ev) => parseInt(sel[ev]) > evidenceUnchecked).length
     }
 
     function getExcludes(evidence, sel) {
-        return evidence.filter((ev) => parseInt(sel[ev]) < evidenceUnchecked).length;
+        return evidence.filter((ev) => parseInt(sel[ev]) < evidenceUnchecked).length
     }
 
     function getScore(evidence, proofs) {
-        const scoredProofs = getProofs(evidence, evidenceStatus);
-        const matchedExcluded = getExcludes(evidence, evidenceStatus);
+        const scoredProofs = getProofs(evidence, evidenceStatus)
+        const matchedExcluded = getExcludes(evidence, evidenceStatus)
 
         if (matchedExcluded > 0) {
             return scoreExcluded
@@ -408,16 +406,16 @@
             return "ghost-convicted"
         }
 
-        return scoreClass;
+        return scoreClass
     }
 
     function getAllProofs() {
-        return Object.keys(evidenceStatus).filter((e) => parseInt(evidenceStatus[e]) === 1).length;
+        return Object.keys(evidenceStatus).filter((e) => parseInt(evidenceStatus[e]) === 1).length
     }
 
     function renderOverview() {
-        const proofs = getAllProofs();
-        const overview = document.getElementById("overview");
+        const proofs = getAllProofs()
+        const overview = document.getElementById("overview")
         while (overview.firstChild) {
             overview.firstChild.remove()
         }
@@ -425,7 +423,7 @@
         ghosts.map((g) => {
             const ghost = document.createElement("div")
             const name = document.createElement("div")
-            const scoreClass = getScoreClass(g.evidence, proofs);
+            const scoreClass = getScoreClass(g.evidence, proofs)
 
             ghost.classList.add("ghost")
             ghost.classList.add(scoreClass)
@@ -446,13 +444,13 @@
                 return g.evidence
             })
             .filter((evidence) => {
-                return getScore(evidence, getAllProofs()) >= scoreSuspicious;
+                return getScore(evidence, getAllProofs()) >= scoreSuspicious
             })
             .reduce((p, c) => {
                 return p.concat(c)
             })
             .filter((value, index, self) => {
-                return self.indexOf(value) === index;
+                return self.indexOf(value) === index
             })
     }
 
