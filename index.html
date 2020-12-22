@@ -396,7 +396,6 @@
                     no.classList.add(selectedClass)
                     break
                 case evidenceUnchecked:
-
                     break
                 case evidenceProven:
                     yes.classList.add(selectedClass)
@@ -410,14 +409,14 @@
             const possibleEvidences = getPossibleEvidences()
 
             bt.classList.remove(impossibleClass, possibleClass, provenClass)
-            if (possibleEvidences.indexOf(id) > -1) {
-                if (evidenceStatus[id] === evidenceProven) {
-                    bt.classList.add(provenClass)
-                } else {
-                    bt.classList.add(possibleClass)
-                }
+            console.log(id, evidenceStatus[id])
+            if (evidenceStatus[id] === evidenceExcluded) {
+                bt.classList.add(impossibleClass)
+            } else if (evidenceStatus[id] === evidenceProven) {
+                bt.classList.add(provenClass)
+            } else if (possibleEvidences.indexOf(id) > -1) {
+                bt.classList.add(possibleClass)
             } else {
-                bt.classList.remove(possibleClass)
                 bt.classList.add(impossibleClass)
             }
         }
@@ -562,19 +561,17 @@
     }
 
     function getPossibleEvidences() {
-        return ghosts
-            .map((g) => {
-                return g.evidence
-            })
-            .filter((evidence) => {
-                return getScore(evidence, getAllProofs()) >= scoreSuspicious
-            })
-            .reduce((p, c) => {
-                return p.concat(c)
-            })
-            .filter((value, index, self) => {
-                return self.indexOf(value) === index
-            })
+        let possibleEvidences = ghosts
+            .map((g) => g.evidence)
+            .filter((evidence) => getScore(evidence, getAllProofs()) >= scoreSuspicious)
+
+        if (possibleEvidences.length === 0) {
+            return []
+        }
+
+        return possibleEvidences
+            .reduce((p, c) => p.concat(c))
+            .filter((value, index, self) => self.indexOf(value) === index)
     }
 
     function renderControls() {
