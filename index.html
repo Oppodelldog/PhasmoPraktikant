@@ -167,52 +167,77 @@
             background-image: url(assets/yes_on.png);
         }
 
-        .evidence-button.id-1.possible {
-            background-image: url(assets/box_possible.png);
-        }
 
         .evidence-button.id-1.impossible {
             background-image: url(assets/box_impossible.png);
         }
 
-        .evidence-button.id-2.possible {
-            background-image: url(assets/uv_possible.png);
+        .evidence-button.id-1.possible {
+            background-image: url(assets/box_possible.png);
+        }
+
+        .evidence-button.id-1.proven {
+            background-image: url(assets/box_proven.png);
         }
 
         .evidence-button.id-2.impossible {
             background-image: url(assets/uv_impossible.png);
         }
 
-        .evidence-button.id-3.possible {
-            background-image: url(assets/book_possible.png);
+        .evidence-button.id-2.possible {
+            background-image: url(assets/uv_possible.png);
+        }
+
+        .evidence-button.id-2.proven {
+            background-image: url(assets/uv_proven.png);
         }
 
         .evidence-button.id-3.impossible {
             background-image: url(assets/book_impossible.png);
         }
 
-        .evidence-button.id-4.possible {
-            background-image: url(assets/temp_possible.png);
+        .evidence-button.id-3.possible {
+            background-image: url(assets/book_possible.png);
+        }
+
+        .evidence-button.id-3.proven {
+            background-image: url(assets/book_proven.png);
         }
 
         .evidence-button.id-4.impossible {
             background-image: url(assets/temp_impossible.png);
         }
 
-        .evidence-button.id-5.possible {
-            background-image: url(assets/emf_possible.png);
+        .evidence-button.id-4.possible {
+            background-image: url(assets/temp_possible.png);
+        }
+
+        .evidence-button.id-4.proven {
+            background-image: url(assets/temp_proven.png);
         }
 
         .evidence-button.id-5.impossible {
             background-image: url(assets/emf_impossible.png);
         }
 
-        .evidence-button.id-6.possible {
-            background-image: url(assets/orb_possible.png);
+        .evidence-button.id-5.possible {
+            background-image: url(assets/emf_possible.png);
+        }
+
+        .evidence-button.id-5.proven {
+            background-image: url(assets/emf_proven.png);
         }
 
         .evidence-button.id-6.impossible {
             background-image: url(assets/orb_impossible.png);
+        }
+
+        .evidence-button.id-6.possible {
+            background-image: url(assets/orb_possible.png);
+        }
+
+        .evidence-button.id-6.proven {
+            background-image: url(assets/orb_proven.png);
         }
     </style>
 </head>
@@ -354,20 +379,15 @@
 
     function updateButtons() {
         const selectedClass = "evidence-button-selected"
-        const possibleClass = "possible"
-        const impossibleClass = "impossible"
-        const possibleEvidences = getPossibleEvidences()
 
         for (let id of Object.keys(evidenceStatus)) {
             if (!evidenceStatus.hasOwnProperty(id)) {
                 continue
             }
 
-            const bt = document.getElementById(buttonId(id))
             const yes = document.getElementById(buttonIdYes(id))
             const no = document.getElementById(buttonIdNo(id))
 
-            bt.classList.remove(selectedClass)
             yes.classList.remove(selectedClass)
             no.classList.remove(selectedClass)
 
@@ -376,16 +396,26 @@
                     no.classList.add(selectedClass)
                     break
                 case evidenceUnchecked:
-                    bt.classList.add(selectedClass)
+
                     break
                 case evidenceProven:
                     yes.classList.add(selectedClass)
                     break
             }
 
+            const bt = document.getElementById(buttonId(id))
+            const impossibleClass = "impossible"
+            const possibleClass = "possible"
+            const provenClass = "proven"
+            const possibleEvidences = getPossibleEvidences()
+
+            bt.classList.remove(impossibleClass, possibleClass, provenClass)
             if (possibleEvidences.indexOf(id) > -1) {
-                bt.classList.remove(impossibleClass)
-                bt.classList.add(possibleClass)
+                if (evidenceStatus[id] === evidenceProven) {
+                    bt.classList.add(provenClass)
+                } else {
+                    bt.classList.add(possibleClass)
+                }
             } else {
                 bt.classList.remove(possibleClass)
                 bt.classList.add(impossibleClass)
