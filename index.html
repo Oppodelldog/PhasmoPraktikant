@@ -83,18 +83,29 @@
             color: #5d5d5d;
         }
 
-        .ghost-proven {
-            border: 1px solid greenyellow;
-            background-color: darkgreen;
-        }
-
         .ghost-excluded, ghost-excluded > * {
             text-decoration: line-through;
             color: #5d5d5d;
         }
 
-        .ghost-excluded .ghost-evidence.evidence-proven{
+        .ghost-excluded .ghost-evidence.evidence-proven {
             color: #7b946d;
+        }
+
+        .ghost-convicted {
+            color: #fff;
+            -webkit-animation: glow 1s ease-in-out infinite alternate;
+            -moz-animation: glow 1s ease-in-out infinite alternate;
+            animation: glow 1s ease-in-out infinite alternate;
+        }
+
+        @-webkit-keyframes glow {
+            from {
+                text-shadow: 0 0 20px #fff, 0 0 30px #28621e, 0 0 40px #53882c, 0 0 50px #9de910, 0 0 60px #6bff3a, 0 0 70px #44e826;
+            }
+            to {
+                text-shadow: 0 0 30px #487325, 0 0 40px #59b343, 0 0 50px #a4ff58, 0 0 60px #94ff68, 0 0 70px #b4ffa6, 0 0 80px #dbffc8;
+            }
         }
 
         .label {
