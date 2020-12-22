@@ -1,9 +1,8 @@
-
-<html lang="de">
+<html lang="en">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Phasmo-Praktikant</title>
+    <title data-text-id="html_title">Phasmophobia Deduction Helper</title>
     <style>
         * {
             margin: 0;
@@ -11,6 +10,16 @@
             outline: none;
             font-size: 18px;
             box-sizing: border-box;
+        }
+
+        a, a:visited {
+            color: white;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
         }
 
         h1 {
@@ -209,37 +218,121 @@
 </head>
 <body>
 <div class="content">
-    <h1 id="headline">Phasmo-Praktikant</h1>
+    <h1 id="headline" data-text-id="html_headline">Phasmophobia Deduction Helper</h1>
     <div id="controls" class="controls">
         <div id="evidence" class="evidence">
         </div>
     </div>
     <div id="overview" class="overview"></div>
+    <div class="languages"><a href="?locale=en">EN</a> - <a href="?locale=fr">FR</a> - <a href="?locale=de">DE</a></div>
 </div>
 
 <script type="application/ecmascript">
+    const text = {
+        "de": {
+            "html_title": "Phasmo-Praktikant",
+            "html_headline": "Phasmo-Praktikant",
+
+            "evidence_box": "Box",
+            "evidence_fingerprints": "Fingerabd.",
+            "evidence_book": "Buch",
+            "evidence_freezing": "Gefriertemp.",
+            "evidence_emf5": "EMF - 5",
+            "evidence_orb": "Orb",
+
+            "ghost_spirit": "Spirit",
+            "ghost_wraith": "Gespenst",
+            "ghost_phantom": "Phantom",
+            "ghost_poltergeist": "Poltergeist",
+            "ghost_banshee": "Banshee",
+            "ghost_jinn": "Dshinn",
+            "ghost_mare": "Mare",
+            "ghost_revenant": "Revenant",
+            "ghost_shade": "Shade",
+            "ghost_demon": "Dämon",
+            "ghost_yurei": "Yurei",
+            "ghost_oni": "Oni",
+            "evidence_proven": "Hab Isch gehabt Alter",
+            "evidence_excluded": "Dat sacht mir jetzt nix",
+        },
+        "en": {
+            "html_title": "Phasmophobia Deduction Helper",
+            "html_headline": "Phasmophobia Deduction Helper",
+
+            "evidence_box": "Box",
+            "evidence_fingerprints": "Fingerprints",
+            "evidence_book": "Writing",
+            "evidence_freezing": "Freezing",
+            "evidence_emf5": "EMF - 5",
+            "evidence_orb": "Orb",
+
+            "ghost_spirit": "Spirit",
+            "ghost_wraith": "Wraith",
+            "ghost_phantom": "Phantom",
+            "ghost_poltergeist": "Poltergeist",
+            "ghost_banshee": "Banshee",
+            "ghost_jinn": "Jinn",
+            "ghost_mare": "Mare",
+            "ghost_revenant": "Revenant",
+            "ghost_shade": "Shade",
+            "ghost_demon": "Demon",
+            "ghost_yurei": "Yurei",
+            "ghost_oni": "Oni",
+            "evidence_proven": "Yes, I had that",
+            "evidence_excluded": "Nope, not faced this evidence.",
+        },
+        "fr": {
+            "html_title": "Phasmophobia Assistante Déduction",
+            "html_headline": "Phasmophobia Assistante Déduction",
+
+            "evidence_box": "Box",
+            "evidence_fingerprints": "Empreintes",
+            "evidence_book": "Ecriture",
+            "evidence_freezing": "Glaciales",
+            "evidence_emf5": "EMF - 5",
+            "evidence_orb": "Orbe",
+
+            "ghost_spirit": "Esprit",
+            "ghost_wraith": "Spectre",
+            "ghost_phantom": "Fantôme",
+            "ghost_poltergeist": "Poltergeist",
+            "ghost_banshee": "Banshee",
+            "ghost_jinn": "Jinn",
+            "ghost_mare": "Cauchemar",
+            "ghost_revenant": "Revenant",
+            "ghost_shade": "Ombre",
+            "ghost_demon": "Démon",
+            "ghost_yurei": "Yurei",
+            "ghost_oni": "Oni",
+            "evidence_proven": "Oui, j'avais ça",
+            "evidence_excluded": "Non, pas face à cette preuve.",
+        }
+    }
+
+    let dictionary = null;
+
     const evidence = {
-        "1": "Box",
-        "2": "Fingerabd.",
-        "3": "Buch",
-        "4": "Gefriertemp.",
-        "5": "EMF - 5",
-        "6": "Orb",
+        "1": "evidence_box",
+        "2": "evidence_fingerprints",
+        "3": "evidence_book",
+        "4": "evidence_freezing",
+        "5": "evidence_emf5",
+        "6": "evidence_orb",
     }
 
     const ghosts = [
-        { name: "Spirit", evidence: ["1", "2", "3"] },
-        { name: "Gespenst", evidence: ["2", "4", "1"] },
-        { name: "Phantom", evidence: ["5", "6", "4"] },
-        { name: "Poltergeist", evidence: ["1", "2", "6"] },
-        { name: "Banshee", evidence: ["5", "2", "4"] },
-        { name: "Dshinn", evidence: ["1", "6", "5"] },
-        { name: "Mare", evidence: ["1", "6", "4"] },
-        { name: "Revenant", evidence: ["5", "2", "3"] },
-        { name: "Shade", evidence: ["5", "6", "3"] },
-        { name: "Dämon", evidence: ["1", "3", "4"] },
-        { name: "Yurei", evidence: ["6", "3", "4"] },
-        { name: "Oni", evidence: ["5", "1", "3"] },
+        { name: "ghost_spirit", evidence: ["1", "2", "3"] },
+        { name: "ghost_wraith", evidence: ["2", "4", "1"] },
+        { name: "ghost_phantom", evidence: ["5", "6", "4"] },
+        { name: "ghost_poltergeist", evidence: ["1", "2", "6"] },
+        { name: "ghost_banshee", evidence: ["5", "2", "4"] },
+        { name: "ghost_jinn", evidence: ["1", "6", "5"] },
+        { name: "ghost_mare", evidence: ["1", "6", "4"] },
+        { name: "ghost_revenant", evidence: ["5", "2", "3"] },
+        { name: "ghost_shade", evidence: ["5", "6", "3"] },
+        { name: "ghost_demon", evidence: ["1", "3", "4"] },
+        { name: "ghost_yurei", evidence: ["6", "3", "4"] },
+        { name: "ghost_oni", evidence: ["5", "1", "3"] },
     ]
 
     const evidenceStatus = {
@@ -315,7 +408,7 @@
 
     function getEvidences(e) {
         return e.evidence.map((evId) => {
-            const name = evidence[evId]
+            const name = getText(evidence[evId])
             const ev = document.createElement("div")
 
             const status = parseInt(evidenceStatus[evId])
@@ -352,8 +445,8 @@
         no.id = buttonIdNo(id)
 
         button.title = name
-        yes.title = "Hab Isch gehabt Alter"
-        no.title = "Dat sacht mir jetzt nix"
+        yes.title = getText("evidence_proven")
+        no.title = getText("evidence_excluded")
 
         button.classList.add("evidence-button")
         yes.classList.add("evidence-button-yes")
@@ -428,7 +521,7 @@
             ghost.classList.add("ghost")
             ghost.classList.add(scoreClass)
             name.classList.add("ghost-name")
-            name.innerHTML = g.name
+            name.innerHTML = getText(g.name)
 
             ghost.appendChild(name)
 
@@ -457,11 +550,64 @@
     function renderControls() {
         const ev = document.getElementById("evidence")
         for (let k of Object.keys(evidence)) {
-            ev.appendChild(createEvidenceButton(evidence[k], k))
+            let evidenceName = getText(evidence[k]);
+            ev.appendChild(createEvidenceButton(evidenceName, k))
         }
     }
 
+    function getText(id) {
+        let translation = dictionary[id];
+        if (translation === undefined) {
+            console.warn(`translation not found for '${id}'`)
+        }
+        return translation
+    }
+
+    function setDictionary(acceptedLocales) {
+        for (let browserLocale of acceptedLocales) {
+            for (let locale of Object.keys(text)) {
+                if (!text.hasOwnProperty(locale)) {
+                    continue
+                }
+
+                if (locale === browserLocale) {
+                    dictionary = text[locale]
+
+                    return
+                }
+            }
+        }
+
+        if (dictionary === null) {
+            dictionary = text["en"];
+            console.warn(`cannot find text for any of ${navigator.languages}. falling back to default locale`)
+        }
+    }
+
+    function translateHtmlElements() {
+        for (let textId of Object.keys(dictionary)) {
+            let element = document.querySelector(`[data-text-id="${textId}"]`);
+            if (element === null) {
+                return
+            }
+
+            element.innerHTML = dictionary[textId]
+        }
+    }
+
+    function applyText() {
+        let acceptedLocales = navigator.languages;
+        const preferredLocale = new URLSearchParams(window.location.search).get('locale')
+        if (preferredLocale !== "") {
+            acceptedLocales = [preferredLocale].concat(acceptedLocales)
+        }
+
+        setDictionary(acceptedLocales);
+        translateHtmlElements();
+    }
+
     window.onload = () => {
+        applyText()
         document.getElementById("headline").addEventListener("click", () => location.reload())
         renderControls()
         updateButtons()
