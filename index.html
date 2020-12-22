@@ -401,13 +401,14 @@
             const possibleEvidences = getPossibleEvidences()
 
             bt.classList.remove(impossibleClass, possibleClass, provenClass)
-            console.log(id, evidenceStatus[id])
             if (evidenceStatus[id] === evidenceExcluded) {
                 bt.classList.add(impossibleClass)
             } else if (evidenceStatus[id] === evidenceProven) {
                 bt.classList.add(provenClass)
             } else if (possibleEvidences.indexOf(id) > -1) {
                 bt.classList.add(possibleClass)
+            }else{
+                bt.classList.add(impossibleClass)
             }
         }
     }
